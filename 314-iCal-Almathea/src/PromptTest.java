@@ -1,4 +1,3 @@
-package iCal;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -231,7 +230,7 @@ public class PromptTest {
 				System.out.println("Do you have exact coordinates of the event? (Latitude;Longitude (in degrees specific to 6 decimal places))");
         			System.out.println("eg. 21.300000;157.816700");
 				System.out.println("If not, leave blank and hit enter.");
-				geoLocation = userInput.nextLine();
+				geoLocation = testInput.nextLine();
       				/*	
         			if (!geoLocation.matches("\d[;](?=\d)+") || !geoLocation.matches(".")) {
         				System.err.println("Please enter a valid coordinate in the proper format.");
