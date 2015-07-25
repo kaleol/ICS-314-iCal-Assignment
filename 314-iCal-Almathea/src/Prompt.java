@@ -217,12 +217,12 @@ public class Prompt {
       System.out.println("Where is the event located?");
       eventLocation = userInput.nextLine();
 
-      while(!validGeo) {
+      //while(!validGeo) {
         System.out.println("Do you have exact coordinates of the event? (Latitude;Longitude (in degrees specific to 6 decimal places))");
         System.out.println("eg. 21.300000;157.816700");
-        System.out.println("If not, leave blank and hit enter.")
+        System.out.println("If not, leave blank and hit enter.");
         geoLocation = userInput.nextLine();
-      
+      /*
         if (!geoLocation.matches("\d[;](?=\d)+") || !geoLocation.matches(".")) {
           System.err.println("Please enter a valid coordinate in the proper format.");
         } 
@@ -230,6 +230,7 @@ public class Prompt {
           validGeo = true;
         }
       }
+      */
       
       while (validClass != true) {
         System.out
