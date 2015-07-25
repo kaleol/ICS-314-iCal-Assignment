@@ -15,6 +15,7 @@ public class Prompt {
   private static boolean validMonth = false;
   private static boolean validYear = false;
   private static boolean validDay = false;
+  private static boolean validGeo = false;
   private static boolean validClass = false;
 
 
@@ -216,6 +217,20 @@ public class Prompt {
       System.out.println("Where is the event located?");
       eventLocation = userInput.nextLine();
 
+      while(!validGeo) {
+        System.out.println("Do you have exact coordinates of the event? (Latitude;Longitude (in degrees specific to 6 decimal places))");
+        System.out.println("eg. 21.300000;157.816700");
+        System.out.println("If not, leave blank and hit enter.")
+        geoLocation = userInput.nextLine();
+      
+        if (!geoLocation.matches("\d[;](?=\d)+") || !geoLocation.matches(".")) {
+          System.err.println("Please enter a valid coordinate in the proper format.");
+        } 
+        else {
+          validGeo = true;
+        }
+      }
+      
       while (validClass != true) {
         System.out
             .println("Event Classification (optional, but set to PUBLIC by default if left blank):\n1. Public\n2. Private\n3. Confidential\n4. Leave Blank");
@@ -252,6 +267,7 @@ public class Prompt {
       bw.write("DTSTAMP:20150709T115021" + "\n");
       bw.write("DESCRIPTION:" + "\n");
       bw.write("LOCATION:" + eventLocation + "\n");
+      bw.write("GEO:" + geoLocation + "\n");
       bw.write("CLASS:" + classFinal + "\n");
       bw.write("SEQUENCE:1" + "\n");
       bw.write("STATUS:TENTATIVE" + "\n");
