@@ -1,139 +1,367 @@
+
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.Iterator;
 import java.util.Scanner;
+import java.util.Vector;
 
 public class Prompt {
 
-	private static File file = new File("/users/SlyMongoose/314iCal.ics");
-	private static Scanner userInput = new Scanner(System.in);
+	//here's your directory Nick - /Storage/School/ICS 314/314iCal.ics - copy and paste back in when you demo
 	
-	public static void main(String [ ] args) {
-		System.out.println("Welcome to your 314 iCal!");
-		System.out.println("What would you like to do?");
-		System.out.println("1. Create new Event");
-		System.out.println("2. View calendar");
-		System.out.println("3. Quit");
-		
-		int selection = userInput.nextInt();
-		
-		switch (selection) {
-			case 1: makeEvent();
-				break;
-			case 2: viewCalendar();
-				break;
-			case 3: createICS();;
-			default: 
-		}
-		
-		userInput.close();
-		
-		System.out.println("Thank you for using iCal! Goodbye!");
-	}
+  private static File file = new File("./blahblah.ics");
+  private static Vector<iCalEvent> calendar = new Vector<iCalEvent>();
+  private static Scanner userInput = new Scanner(System.in);
+  private static boolean go = false;
+  private static boolean validTime = false;
+  private static boolean validMonth = false;
+  private static boolean validYear = false;
+  private static boolean validDay = false;
+  private static boolean validClass = false;
+  private static boolean finished = false;
 
-	private static void createICS() {
-		
-		
-	}
+  public static void main(String[] args) {
 
-	private static void viewCalendar() {
-		
-		
-	}
+    while (go != true || finished != true) {
+      System.out.println("Welcome to your 314 iCal!");
+      System.out.println("What would you like to do?");
+      System.out.println("1. Create new Event");
+      System.out.println("2. View calendar");
+      System.out.println("3. Quit");
+      String selection = userInput.nextLine();
+      
+      switch (selection) {
+      case "1":
+        makeEvent();
+        go = true;
+        break;
+      case "2":
+        viewCalendar();
+        go = true;
+        break;
+      case "3":
+        createICS();
+        go = true;
+        finished = true;
+        break;
+      default:
+        System.err.println("Please choose a valid option");
+      }
+    }
 
-	private static void makeEvent() {
-		try {
-			String eventName, timeStart, timeEnd, day, monthTemp, monthFinal = "NULL", year, eventLocation, geoLocation, classTemp, classFinal = "NULL";
-			String content = "BEGIN:VCALENDAR\nPRODID:-//Google Inc//Google Calendar 70.9054//EN\nVERSION:2.0\n"
-					+ "CALSCALE:GREGORIAN\nMETHOD:PUBLISH\nX-WR-CALNAME:hello\nX-WR-TIMEZONE:Pacific/Honolulu\nBEGIN:VTIMEZONE\n"
-					+ "TZID:Pacific/Honolulu\nX-LIC-LOCATION:Pacific/Honolulu\nBEGIN:STANDARD\nTZOFFSETFROM:-1000\nTZOFFSETTO:-1000\n"
-					+ "TZNAME:HST\nDTSTART:19700101T000000\nEND:STANDARD\nEND:VTIMEZONE\n";
-	
-			// if file doesnt exists, then create it
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-			FileWriter fw = new FileWriter(file.getAbsoluteFile());
-			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write(content);
-			
-			System.out.println("What is the name of this event?");
-			eventName = userInput.next();
-			System.out.println("What year does this event occur? (eg. 1970)");
-			year = userInput.next();
-			System.out.println("What month? (eg. \"August\")");
-			monthTemp = userInput.next();
-			monthTemp = monthTemp.toLowerCase();
-			System.out.println(monthTemp);
-			switch (monthTemp) {
-				case "january": monthFinal = "01";
-					break;
-				case "february": monthFinal = "02";
-					break;
-				case "march": monthFinal = "03";
-					break;
-				case "april": monthFinal = "04";
-					break;
-				case "may": monthFinal = "05";
-					break;
-				case "june": monthFinal = "06";
-					break;
-				case "july": monthFinal = "07";
-					break;
-				case "august": monthFinal = "08";
-					break;
-				case "september": monthFinal = "09";
-					break;
-				case "october": monthFinal = "10";
-					break;
-				case "november": monthFinal = "11";
-					break;
-				case "december": monthFinal = "12";
-					break;
-			}
-			System.out.println("What day of the month? (eg. \"15\")");
-			day = userInput.next();
-			System.out.println("What time does the event start? (eg. 0600 (6am) or 1400 (2pm))");
-			timeStart = userInput.next();
-			System.out.println("What time does the event end?  (eg. 0600 (6am) or 1400 (2pm))");
-			timeEnd = userInput.next();
-			System.out.println("Where is the event located?");
-			eventLocation = userInput.next();
-			System.out.println("Event Classification (optional, but set to PUBLIC by default if left blank):\n1. Public\n2. Private\n3. Confidential\n4. Leave Blank");
-			classTemp = userInput.next();
-			System.out.println(classTemp);
-			switch (classTemp) {
-				case "1": classFinal = "PUBLIC";
-					break;
-				case "2": classFinal = "PRIVATE";
-					break;
-				case "3": classFinal = "CONFIDENTIAL";
-					break;
-				case "4": classFinal = "PUBLIC";
-					break;
-			}
-			
-			bw.write("BEGIN:VEVENT" + "\n");
-			bw.write("DTSTART:" + year + monthFinal + day + "T" + timeStart +"00" + "\n");
-			bw.write("DTEND:" + year + monthFinal + day + "T" + timeEnd +"00" + "\n");
-			bw.write("DTSTAMP:20150709T115021" + "\n");
-			bw.write("DESCRIPTION:" + "\n");
-			bw.write("LOCATION:" + eventLocation + "\n");
-			bw.write("CLASS:" + classFinal + "\n");
-			bw.write("SEQUENCE:1" + "\n");
-			bw.write("STATUS:TENTATIVE" + "\n");
-			bw.write("SUMMARY:" + eventName + "\n");
-			bw.write("TRANSP:OPAQUE" + "\n");
-			bw.write("END:VEVENT" + "\n");
-			bw.write("END:VCALENDAR");
-			
-			bw.close();
-			
-			System.out.println("Event created successfully!");
+    userInput.close();
 
-		} catch (IOException e) {
+    System.out.println("Thank you for using iCal! Goodbye!");
+  }
+
+
+  private static void createICS() {
+    String content = "BEGIN:VCALENDAR\nPRODID:-//Google Inc//Google Calendar 70.9054//EN\nVERSION:2.0\n"
+            + "CALSCALE:GREGORIAN\nMETHOD:PUBLISH\nX-WR-CALNAME:hello\nX-WR-TIMEZONE:Pacific/Honolulu\nBEGIN:VTIMEZONE\n"
+            + "TZID:Pacific/Honolulu\nX-LIC-LOCATION:Pacific/Honolulu\nBEGIN:STANDARD\nTZOFFSETFROM:-1000\nTZOFFSETTO:-1000\n"
+            + "TZNAME:HST\nDTSTART:19700101T000000\nEND:STANDARD\nEND:VTIMEZONE\n";
+
+    Iterator<iCalEvent> schedule = calendar.iterator();
+    
+    // if file doesnt exists, then create it
+    try {
+	    if (!file.exists()) {
+	      file.createNewFile();
+	    }
+	    FileWriter fw = new FileWriter(file.getAbsoluteFile());
+	    BufferedWriter bw = new BufferedWriter(fw);
+	    bw.write(content);
+    
+    	while (schedule.hasNext()) {
+	    	iCalEvent temp = schedule.next();
+	    	
+		    bw.write("BEGIN:VEVENT" + "\n");
+		    bw.write("DTSTART:" + temp.getYear() + temp.getMonth() + temp.getDay() + "T" + temp.getStartTime() + "00" + "\n");
+		    bw.write("DTEND:"  + temp.getYear() + temp.getMonth() + temp.getDay() + "T" + temp.getEndTime() + "00" + "\n");
+		    bw.write("DTSTAMP:20150709T115021" + "\n");
+		    bw.write("DESCRIPTION:" + "\n");
+		    bw.write("LOCATION:" + temp.getLocation() + "\n");
+		    bw.write("CLASS:" + temp.getEventClass() + "\n");
+		    bw.write("SEQUENCE:1" + "\n");
+		    bw.write("STATUS:TENTATIVE" + "\n");
+		    bw.write("SUMMARY:" + temp.getName() + "\n");
+		    bw.write("TRANSP:OPAQUE" + "\n");
+		    bw.write("END:VEVENT" + "\n");
+    	}
+    	bw.write("END:VCALENDAR");
+		   
+		bw.close();
+	} catch (IOException e) {
 			e.printStackTrace();
-		}	
 	}
+  }
+
+  private static void viewCalendar() {
+    Iterator<iCalEvent> schedule = calendar.iterator();
+    String lastDate = "different";
+    
+    if (calendar.isEmpty()) {
+    	System.out.println("Calendar is empty!  You do not have any events planned.");
+    }
+    else {
+    	System.out.println("Here is your calendar of events!");
+    }
+    while (schedule.hasNext()) {
+    	iCalEvent temp = schedule.next();
+    	if (temp.getTotalDate().equals(lastDate)) {
+    		System.out.println("\t" + temp.getStartTime() + " - " + temp.getEndTime() + " : " + temp.getName());
+    		System.out.println("\t\t" + "Location: " + temp.getLocation());
+    	}
+    	else {
+    		System.out.println();
+	    	System.out.println(temp.getMonth() + "/" + temp.getDay() + "/" + temp.getYear());
+	    	System.out.println("\t" + temp.getStartTime() + " - " + temp.getEndTime() + " : " + temp.getName());
+	    	System.out.println("\t\t" + "Location: " + temp.getLocation());
+    	}
+    	
+    	lastDate = temp.getTotalDate();
+    }
+    System.out.println();
+  }
+
+
+  private static void makeEvent() {
+      String eventName, timeStart = "NULL", timeEnd = "NULL", day = "NULL", monthTemp, monthFinal = "NULL", year = "NULL", eventLocation, geoLocation, classTemp = "NULL", classFinal = "NULL";
+
+      System.out.println("What is the name of this event?");
+      eventName = userInput.nextLine();
+
+      while (validYear != true) {
+        System.out.println("What year does this event occur? (eg. 1970)");
+        year = userInput.nextLine();
+        if (year.length() < 4 || year.length() > 4 || !year.matches("[0-9]+")) {
+          System.err.println("Please enter a valid year");
+        }
+        else {
+          validYear = true;
+        }
+      }
+
+      while (validMonth != true) {
+        System.out.println("What month? (eg. \"August\")");
+        monthTemp = userInput.nextLine();
+        monthTemp = monthTemp.toLowerCase();
+        switch (monthTemp) {
+        case "january":
+          monthFinal = "01";
+          validMonth = true;
+          break;
+        case "february":
+          monthFinal = "02";
+          validMonth = true;
+          break;
+        case "march":
+          monthFinal = "03";
+          validMonth = true;
+          break;
+        case "april":
+          monthFinal = "04";
+          validMonth = true;
+          break;
+        case "may":
+          monthFinal = "05";
+          validMonth = true;
+          break;
+        case "june":
+          monthFinal = "06";
+          validMonth = true;
+          break;
+        case "july":
+          monthFinal = "07";
+          validMonth = true;
+          break;
+        case "august":
+          monthFinal = "08";
+          validMonth = true;
+          break;
+        case "september":
+          monthFinal = "09";
+          validMonth = true;
+          break;
+        case "october":
+          monthFinal = "10";
+          validMonth = true;
+          break;
+        case "november":
+          monthFinal = "11";
+          validMonth = true;
+          break;
+        case "december":
+          monthFinal = "12";
+          validMonth = true;
+          break;
+        default:
+          System.err.println("Please enter a valid month");
+        }
+      }
+
+      while (validDay != true) {
+        System.out.println("What day of the month? (eg. \"15\")");
+        day = userInput.nextLine();
+        if (day.length() < 2 || day.length() > 2 || !day.matches("[0-9]+")) {
+          System.err.println("Please enter 2 digits");
+        }
+        else {
+          validDay = true;
+        }
+      }
+
+      while (validTime != true) {
+        System.out.println("What time does the event start? (eg. 0600 (6am) or 1400 (2pm))");
+        timeStart = userInput.nextLine();
+        if (timeStart.length() < 4 || timeStart.length() > 4
+
+        // First digit must start with 0, 1, or 2
+            /*
+             * || !timeStart.startsWith("0") || !timeStart.startsWith("1") ||
+             * !timeStart.startsWith("2")
+             * 
+             * // Third digit must be 0 - 5 || timeStart.startsWith("6", 2) ||
+             * timeStart.startsWith("7", 2) || timeStart.startsWith("8", 2) ||
+             * timeStart.startsWith("9", 2)
+             */
+
+            || !timeStart.matches("[0-9]+")) {
+          System.err.println("Please enter a valid time eg. 0600 (6am) or 1400 (2 pm)");
+        }
+        else {
+          validTime = true;
+        }
+      }
+
+      validTime = false;
+
+      while (validTime != true) {
+        System.out.println("What time does the event end?  (eg. 0600 (6am) or 1400 (2pm))");
+        timeEnd = userInput.nextLine();
+
+        if (timeEnd.length() < 4 || timeEnd.length() > 4
+        // First digit must start with 0, 1, or 2
+            /*
+             * || !timeStart.startsWith("0") || !timeStart.startsWith("1") ||
+             * !timeStart.startsWith("2")
+             * 
+             * // Third digit must be 0 - 5 || timeStart.startsWith("6", 2) ||
+             * timeStart.startsWith("7", 2) || timeStart.startsWith("8", 2) ||
+             * timeStart.startsWith("9", 2)
+             */
+
+            || !timeEnd.matches("[0-9]+")) {
+          System.err.println("Please enter a valid time eg. 0600 (6am) or 1400 (2 pm)");
+        }
+        else {
+          validTime = true;
+        }
+      }
+
+      System.out.println("Where is the event located?");
+      eventLocation = userInput.nextLine();
+
+      while (validClass != true) {
+        System.out.println("Event Classification (optional, but set to PUBLIC by default if left blank):\n1. Public\n2. Private\n3. Confidential\n4. Leave Blank");
+        classTemp = userInput.nextLine();
+
+        switch (classTemp) {
+        case "1":
+          classFinal = "PUBLIC";
+          validClass = true;
+          break;
+        case "2":
+          classFinal = "PRIVATE";
+          validClass = true;
+          break;
+        case "3":
+          classFinal = "CONFIDENTIAL";
+          validClass = true;
+          break;
+        case "4":
+          classFinal = "PUBLIC";
+          validClass = true;
+          break;
+        default:
+          System.err.println("Please choose a valid option");
+        }
+      }
+      
+      //create a new iCalEvent object to save the event and store it in the event vector
+      iCalEvent tempEvent = new iCalEvent();
+      
+      tempEvent.setDay(day);
+      tempEvent.setMonth(monthFinal);
+      tempEvent.setYear(year);
+      tempEvent.setStartTime(timeStart);
+      tempEvent.setEndTime(timeEnd);
+      tempEvent.setLocation(eventLocation);
+      tempEvent.setName(eventName);
+      
+      String totalS = tempEvent.getYear() + tempEvent.getMonth() + tempEvent.getDay();
+      tempEvent.setTotalDate(totalS);
+      
+      //insert the event in to the calendar vector
+      insertNewEvent(tempEvent);
+      
+      validDay = false;
+      validMonth = false;
+      validYear = false;
+      validClass = false;
+      validTime = false;
+
+      System.out.println("Event created successfully!\n");
+  }
+  
+  //method sorts events, first by date, then by time
+  public static void insertNewEvent(iCalEvent newEvent) {
+	  Iterator<iCalEvent> schedule = calendar.iterator();
+	  int index = 0;
+	  boolean added = false;
+	  iCalEvent temp = null;
+	  
+	  
+	  while (schedule.hasNext() && added == false) {
+		  temp = schedule.next();
+		  while (newEvent.getTotalDate().compareTo(temp.getTotalDate()) > 0 && index < calendar.size()){
+			  if (schedule.hasNext()) {
+				  temp = schedule.next();
+			  }
+			  index++;
+		  }
+		  
+		  while(newEvent.getTotalDate().equals(temp.getTotalDate()) && added == false) {
+			  int newTime = Integer.parseInt(newEvent.getStartTime());
+			  int tempTime = Integer.parseInt(temp.getStartTime());
+			  if (newTime > tempTime && schedule.hasNext()) {
+				  temp = schedule.next();
+				  index++;
+			  }
+			  else if (newTime > tempTime && !schedule.hasNext()) {
+				  if (index + 1 > calendar.size()) {
+					  calendar.add(newEvent);
+					  added = true;
+				  }
+				  else {
+					  calendar.add(index + 1, newEvent);
+					  added = true;
+				  }
+			  }
+			  else {
+				  calendar.add(index, newEvent);
+				  added = true;
+			  }
+			  
+		  }
+	  }
+	  
+	  if (added == false) {
+		  calendar.add(index, newEvent);
+	  }
+  }
 }
