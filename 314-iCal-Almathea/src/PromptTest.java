@@ -16,6 +16,7 @@ public class PromptTest {
 	private static boolean validMonth = false;
 	private static boolean validYear = false;
 	private static boolean validDay = false;
+	private static boolean validGeo = false;
 	private static boolean validClass = false;
 
 	public static void main(String[] args) throws FileNotFoundException {
@@ -226,12 +227,12 @@ public class PromptTest {
 			System.out.println("Where is the event located?");
 			eventLocation = testInput.nextLine();
 			
-			while(!validGeo) {
+		//	while(!validGeo) {
 				System.out.println("Do you have exact coordinates of the event? (Latitude;Longitude (in degrees specific to 6 decimal places))");
         			System.out.println("eg. 21.300000;157.816700");
-				System.out.println("If not, leave blank and hit enter.")
+				System.out.println("If not, leave blank and hit enter.");
 				geoLocation = userInput.nextLine();
-      
+      				/*	
         			if (!geoLocation.matches("\d[;](?=\d)+") || !geoLocation.matches(".")) {
         				System.err.println("Please enter a valid coordinate in the proper format.");
 				}
@@ -239,6 +240,7 @@ public class PromptTest {
           				validGeo = true;
         			}
       			}
+      			*/
 
 			while (validClass != true) {
 				System.out
