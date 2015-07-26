@@ -1,19 +1,7 @@
 
 
 public class iCalEvent {
-
-	public iCalEvent() {
-		super();
-		this.month = month;
-		this.day = day;
-		this.year = year;
-		this.startTime = startTime;
-		this.endTime = endTime;
-		this.location = location;
-		this.eventClass = eventClass;
-		this.name = name;
-		this.totalDate = totalDate;
-	}
+	
 	public String month;
 	public String day;
 	public String year;
@@ -23,6 +11,22 @@ public class iCalEvent {
 	public String eventClass;
 	public String name;
 	public String totalDate;
+	public String geo;
+	public String comment;
+
+	public iCalEvent() {
+		super();
+		this.month = null;
+		this.day = null;
+		this.year = null;
+		this.startTime = null;
+		this.endTime = null;
+		this.location = null;
+		this.eventClass = null;
+		this.name = null;
+		this.totalDate = null;
+	}
+	
 	public String getMonth() {
 		return month;
 	}
@@ -76,6 +80,22 @@ public class iCalEvent {
 	}
 	public void setTotalDate(String totalDate) {
 		this.totalDate = totalDate;
+	}
+
+	public String getGeo() {
+		return geo;
+	}
+
+	public void setGeo(String geo) {
+		this.geo = geo;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 
 }
