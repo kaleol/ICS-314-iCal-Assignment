@@ -9,9 +9,9 @@ import java.util.Vector;
 
 public class Prompt {
 
-	 //here's your directory Nick - /Storage/School/ICS 314/314iCal.ics - copy and paste back in when you demo
+	 //here's your directory Adam - home, "secondDeliverable.ics" - copy and paste back in when you demo
 	static String home = System.getProperty("user.home");
-  private static File file = new File(home, "secondDeliverable.ics");
+  private static File file = new File("/Storage/School/ICS 314/314iCal.ics");
   private static Vector<iCalEvent> calendar = new Vector<iCalEvent>();
   private static Scanner userInput = new Scanner(System.in);
   private static boolean go = false;
@@ -83,8 +83,12 @@ public class Prompt {
 		    bw.write("DTSTAMP:20150709T115021" + "\n");
 		    bw.write("DESCRIPTION:" + "\n");
 		    bw.write("LOCATION:" + temp.getLocation() + "\n");
+		    if (temp.getGeo() != null) {
 		    bw.write("GEO:" + temp.getGeo() + "\n");
+		    }
+		    if (temp.getComment() != null) {
 		    bw.write("COMMENT:" + temp.getComment() + "\n");
+		    }
 		    bw.write("CLASS:" + temp.getEventClass() + "\n");
 		    bw.write("SEQUENCE:1" + "\n");
 		    bw.write("STATUS:TENTATIVE" + "\n");
@@ -302,6 +306,9 @@ public class Prompt {
       System.out.println("eg. 21.300000;157.816700");
       System.out.println("If not, leave blank and hit enter.");
       geoLocation = userInput.nextLine();
+      if (geoLocation.equals("")) {
+        geoLocation = null;
+      }
       
       //create a new iCalEvent object to save the event and store it in the event vector
       iCalEvent tempEvent = new iCalEvent();
@@ -313,7 +320,9 @@ public class Prompt {
       tempEvent.setEndTime(timeEnd);
       tempEvent.setLocation(eventLocation);
       tempEvent.setEventClass(classFinal);
+      if (geoLocation != null) {
       tempEvent.setGeo(geoLocation);
+      }
       tempEvent.setName(eventName);
       
       String totalS = tempEvent.getYear() + tempEvent.getMonth() + tempEvent.getDay();
@@ -362,8 +371,15 @@ public class Prompt {
 			  else if (newTime > tempTime && !schedule.hasNext()) {
 				  //newEvent is the latest event of the day
 				  if (index + 1 > calendar.size()) {
-					  calendar.add(newEvent);
-					  added = true;
+				    String[] firstPoint = newEvent.getGeo().split(";");
+	          String[] secondPoint = temp.getGeo().split(";");
+	          double distance = distFrom(Double.parseDouble(firstPoint[0]), Double.parseDouble(firstPoint[1]), Double.parseDouble(secondPoint[0]), Double.parseDouble(secondPoint[1]));
+	          double distanceMiles = distFromMiles(Double.parseDouble(firstPoint[0]), Double.parseDouble(firstPoint[1]), Double.parseDouble(secondPoint[0]), Double.parseDouble(secondPoint[1]));
+	          String tempDistance = Double.toString(distance);
+	          String tempDistanceMiles = Double.toString(distanceMiles);
+	          newEvent.setComment("Distance between this event and the last is " + tempDistance + " kilometers (" + tempDistanceMiles + " miles)!");
+	          calendar.add(index, newEvent);
+	          added = true;
 				  }
 				  //newEvent is inserted in the correct order
 				  else {
@@ -371,34 +387,30 @@ public class Prompt {
 						  String[] firstPoint = newEvent.getGeo().split(";");
 						  String[] secondPoint = temp.getGeo().split(";");
 						  double distance = distFrom(Double.parseDouble(firstPoint[0]), Double.parseDouble(firstPoint[1]), Double.parseDouble(secondPoint[0]), Double.parseDouble(secondPoint[1]));
+						  double distanceMiles = distFromMiles(Double.parseDouble(firstPoint[0]), Double.parseDouble(firstPoint[1]), Double.parseDouble(secondPoint[0]), Double.parseDouble(secondPoint[1]));
 						  String tempDistance = Double.toString(distance);
-						  temp.setComment("Distance between this event and the last is " + tempDistance + " kilometers!");
+						  String tempDistanceMiles = Double.toString(distanceMiles);
+						  temp.setComment("Distance between this event and the last is " + tempDistance + " kilometers (" + tempDistanceMiles + " miles)!");
+						  }
 						  
-						  System.out.println(tempDistance);
-					  }
 					  calendar.add(index + 1, newEvent);
 					  added = true;
 				  }
 			  }
 			  //newEvent is at the beginning		  
 			  else {
-				  String[] firstPoint = newEvent.getGeo().split(";");
-				  String[] secondPoint = temp.getGeo().split(";");
-				  double distance = distFrom(Double.parseDouble(firstPoint[0]), Double.parseDouble(firstPoint[1]), Double.parseDouble(secondPoint[0]), Double.parseDouble(secondPoint[1]));
-				  String tempDistance = Double.toString(distance);
-				  newEvent.setComment("Distance between this event and the last is " + tempDistance + " kilometers!");
-				  
-				  System.out.println(tempDistance);
+			    calendar.add(newEvent);
+          added = true;
+				 
+//				  System.out.println(tempDistance);
 					  
-				  calendar.add(index, newEvent);
-				  added = true;
+				  
 			  }
 			  
 		  }
 	  }
 	  
 	  if (added == false) {
-		  newEvent.setComment("");
 		  calendar.add(index, newEvent);
 	  }
   }
@@ -417,4 +429,17 @@ public class Prompt {
 	    return dist;
 	    }
   
+  public static double distFromMiles(double lat1, double lng1, double lat2, double lng2) {
+    double earthRadius = 3958.75; // miles (or 6371.0 kilometers)
+    double dLat = Math.toRadians(lat2-lat1);
+    double dLng = Math.toRadians(lng2-lng1);
+    double sindLat = Math.sin(dLat / 2);
+    double sindLng = Math.sin(dLng / 2);
+    double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
+            * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2));
+    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    double dist = earthRadius * c;
+
+    return dist;
+    }
 }
